@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"personal-finance-app/pkg/application/user"
+	userDomain "personal-finance-app/pkg/domain/user"
 )
 
 type UserHandler struct {
@@ -17,7 +18,7 @@ func NewUserHandler(userService user.Service) *UserHandler {
 }
 
 func (h *UserHandler) SignUp(c *gin.Context) {
-	var input user.SignUpInput
+	var input userDomain.SignUpRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

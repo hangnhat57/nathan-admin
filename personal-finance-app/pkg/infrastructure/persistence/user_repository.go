@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"personal-finance-app/pkg/domain/user"
 )
@@ -39,6 +40,9 @@ func (r *userRepository) FindByEmail(email string) (*user.User, error) {
 	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
+	}
+	if user.ID == 0 {
+		return nil, fmt.Errorf("not found")
 	}
 	return &user, nil
 }
