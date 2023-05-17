@@ -1,13 +1,18 @@
 #!/bin/bash
 
-component=$1
-component_lower=$(echo "$component" | tr '[:upper:]' '[:lower:]')
+read -p "Enter component name: " component
+if [ -z "$component" ]; then
+  echo "Component name is required."
+  exit 1
+fi
+
+component_snake_case=$(echo "$component" | sed -r 's/([a-z0-9])([A-Z])/\1_\2/g' | tr '[:upper:]' '[:lower:]')
 app_package="application"
 domain_package="domain"
 web_package="infrastructure/web"
 
 # Create application/user directory and file
-app_dir="pkg/$app_package/$component_lower"
+app_dir="pkg/$app_package/$component_snake_case"
 app_file="$app_dir/service.go"
 if [ ! -d "$app_dir" ]; then
   mkdir -p "$app_dir"
@@ -39,8 +44,8 @@ else
 fi
 
 # Create domain/user directory and file
-domain_dir="pkg/$domain_package/$component_lower"
-domain_file="$domain_dir/$component_lower.go"
+domain_dir="pkg/$domain_package/$component_snake_case"
+domain_file="$domain_dir/$component_snake_case.go"
 if [ ! -d "$domain_dir" ]; then
   mkdir -p "$domain_dir"
   echo "Created directory: $domain_dir"
@@ -49,7 +54,7 @@ fi
 if [ ! -f "$domain_file" ]; then
   echo "package $domain_package
 
-type ${component} struct {
+type $component struct {
 	// Add your fields here
 }
 
@@ -60,9 +65,9 @@ else
   echo "File already exists: $domain_file"
 fi
 
-# Create infrastructure/web/user directory and file
+# Create infrastructure/web/user directory and files
 web_dir="pkg/$web_package"
-web_file="$web_dir/${component_lower}_handler.go"
+web_file="$web_dir/${component_snake_case}_handler.go"
 if [ ! -d "$web_dir" ]; then
   mkdir -p "$web_dir"
   echo "Created directory: $web_dir"
@@ -78,12 +83,12 @@ import (
 )
 
 type ${component}Handler struct {
-	${component_lower}Service *${app_package}.${component}Service
+	${component}Service *${app_package}.${component}Service
 }
 
-func New${component}Handler(${component_lower}Service *${app_package}.${component}Service) *${component}Handler {
+func New${component}Handler(${component}Service *${app_package}.${component}Service) *${component}Handler {
 	return &${component}Handler{
-		${component_lower}Service: ${component_lower}Service,
+		${component}Service: ${component}Service,
 	}
 }
 
@@ -97,3 +102,14 @@ func (h *${component}Handler) Create${component} c *gin.Context) {
 else
   echo "File already exists: $web_file"
 fi
+
+# Create infrastructure/persistence/user directory and files
+persistence_dir="pkg/infrastructure/persistence"
+repository_dir="$persistence_dir/$component_snake_case"
+repository_file="$repository_dir/repository.go"
+if [ ! -d "$repository_dir" ]; then
+  mkdir -p "$repository_dir"
+  echo "Created directory: $repository_dir"
+fi
+
+if [ ! -f "$repository_file
