@@ -4,12 +4,12 @@ import (
 	"errors"
 )
 
-type UserRepository interface {
-	Save(user *User) error
-	FindByEmail(email string) (*User, error)
-	FindById(id uint) (*User, error)
+type Repository interface {
+	Create(user *User) error
 	Update(user *User) error
-	Delete(id uint) error
+	Delete(user *User) error
+	FindByID(id uint) (*User, error)
+	FindByEmail(email string) (*User, error)
 }
 
 var (
