@@ -2,15 +2,16 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"personal-finance-app/pkg/application/user"
-	"personal-finance-app/pkg/application/income"
 	"personal-finance-app/pkg/application/expense"
+	"personal-finance-app/pkg/application/income"
+	"personal-finance-app/pkg/application/user"
 )
 
 type Handler struct {
 	userHandler    *UserHandler
 	incomeHandler  *IncomeHandler
 	expenseHandler *ExpenseHandler
+	userService    *user.Service
 }
 
 func NewHandler(userService user.Service, incomeService income.Service, expenseService expense.Service) *Handler {
@@ -33,7 +34,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 		}
 
 		authenticated := v1.Group("/")
-		authenticated.Use(h.userHandler.AuthMiddleware())
+		authenticated.Use(AuthMiddleware(h.userService))
 		{
 			incomeGroup := authenticated.Group("/incomes")
 			{
@@ -51,4 +52,3 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 		}
 	}
 }
-

@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"net/http"
+	_ "net/http"
 
 	"github.com/gin-gonic/gin"
 
@@ -18,15 +18,15 @@ func main() {
 	r := gin.Default()
 
 	// Connect to the database.
-	db, err := persistence.NewDB()
+	db, err := persistence.NewDatabase("", "", "", "", 3306)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
 	// Initialize repositories.
-	userRepo := persistence.NewUserRepository(db)
-	incomeRepo := persistence.NewIncomeRepository(db)
-	expenseRepo := persistence.NewExpenseRepository(db)
+	userRepo := persistence.NewUserRepository(db.DB)
+	incomeRepo := persistence.NewIncomeRepository(db.DB)
+	expenseRepo := persistence.NewExpenseRepository(db.DB)
 
 	// Initialize services.
 	userService := user.NewUserService(userRepo)
@@ -37,8 +37,7 @@ func main() {
 	handler := web.NewHandler(userService, incomeService, expenseService)
 
 	// Register routes.
-	r = handler.RegisterRoutes()
-
+	handler.RegisterRoutes(r)
 	// Start the server.
 	if err := r.Run(); err != nil {
 		log.Fatalf("server exited with error: %v", err)

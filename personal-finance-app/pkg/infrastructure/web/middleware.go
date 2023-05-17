@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func AuthMiddleware(userService user.Service) gin.HandlerFunc {
+func AuthMiddleware(userService *user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

@@ -1,21 +1,20 @@
 package income
 
 import (
-	"errors"
 	"time"
 
 	"personal-finance-app/pkg/domain/income"
 )
 
-type IncomeService struct {
+type Service struct {
 	repo income.IncomeRepository
 }
 
-func NewIncomeService(repo income.IncomeRepository) *IncomeService {
-	return &IncomeService{repo: repo}
+func NewIncomeService(repo income.IncomeRepository) *Service {
+	return &Service{repo: repo}
 }
 
-func (s *IncomeService) AddIncome(amount float64, description, source string, userID uint, date time.Time) error {
+func (s *Service) AddIncome(amount float64, description, source string, userID uint, date time.Time) error {
 	// Here you would implement the logic for adding a new income.
 	// This could include validating the input, etc.
 
@@ -35,7 +34,7 @@ func (s *IncomeService) AddIncome(amount float64, description, source string, us
 	return nil
 }
 
-func (s *IncomeService) UpdateIncome(id uint, amount float64, description, source string, date time.Time) error {
+func (s *Service) UpdateIncome(id uint, amount float64, description, source string, date time.Time) error {
 	// Here you would implement the logic for updating an existing income.
 	// This could include validating the input, checking if the income with the given ID exists, etc.
 
@@ -57,14 +56,14 @@ func (s *IncomeService) UpdateIncome(id uint, amount float64, description, sourc
 	return nil
 }
 
-func (s *IncomeService) DeleteIncome(id uint) error {
+func (s *Service) DeleteIncome(id uint) error {
 	// Here you would implement the logic for deleting an income.
 	// This could include checking if the income with the given ID exists, etc.
 
 	return s.repo.Delete(id)
 }
 
-func (s *IncomeService) GetIncomes(userID uint) ([]income.Income, error) {
+func (s *Service) GetIncomes(userID uint) ([]income.Income, error) {
 	// Here you would implement the logic for retrieving all incomes of a user.
 
 	return s.repo.FindByUserID(userID)

@@ -1,21 +1,20 @@
 package expense
 
 import (
-	"errors"
 	"time"
 
 	"personal-finance-app/pkg/domain/expense"
 )
 
-type ExpenseService struct {
+type Service struct {
 	repo expense.ExpenseRepository
 }
 
-func NewExpenseService(repo expense.ExpenseRepository) *ExpenseService {
-	return &ExpenseService{repo: repo}
+func NewExpenseService(repo expense.ExpenseRepository) *Service {
+	return &Service{repo: repo}
 }
 
-func (s *ExpenseService) AddExpense(amount float64, description, category string, userID uint, date time.Time) error {
+func (s *Service) AddExpense(amount float64, description, category string, userID uint, date time.Time) error {
 	// Here you would implement the logic for adding a new expense.
 	// This could include validating the input, etc.
 
@@ -35,7 +34,7 @@ func (s *ExpenseService) AddExpense(amount float64, description, category string
 	return nil
 }
 
-func (s *ExpenseService) UpdateExpense(id uint, amount float64, description, category string, date time.Time) error {
+func (s *Service) UpdateExpense(id uint, amount float64, description, category string, date time.Time) error {
 	// Here you would implement the logic for updating an existing expense.
 	// This could include validating the input, checking if the expense with the given ID exists, etc.
 
@@ -57,14 +56,14 @@ func (s *ExpenseService) UpdateExpense(id uint, amount float64, description, cat
 	return nil
 }
 
-func (s *ExpenseService) DeleteExpense(id uint) error {
+func (s *Service) DeleteExpense(id uint) error {
 	// Here you would implement the logic for deleting an expense.
 	// This could include checking if the expense with the given ID exists, etc.
 
 	return s.repo.Delete(id)
 }
 
-func (s *ExpenseService) GetExpenses(userID uint) ([]expense.Expense, error) {
+func (s *Service) GetExpenses(userID uint) ([]expense.Expense, error) {
 	// Here you would implement the logic for retrieving all expenses of a user.
 
 	return s.repo.FindByUserID(userID)
